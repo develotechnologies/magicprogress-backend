@@ -10,9 +10,11 @@ exports.updateProfile = async (req, res, next) => {
 			user,
 			firstname,
 			lastname,
+			gender,
+			birthdate,
+			description,
 			longitude,
 			latitude,
-			address,
 			removePicture,
 		} = req.body;
 		const { picture } = req.files || {};
@@ -20,7 +22,10 @@ exports.updateProfile = async (req, res, next) => {
 
 		if (firstname) profileObj.firstname = firstname;
 		if (lastname) profileObj.lastname = lastname;
-		if (address) profileObj.address = address;
+		if (birthdate && moment().isValid(birthdate))
+			profileObj.birthdate = birthdate;
+		if (gender) profileObj.gender = gender;
+		if (description) profileObj.description = description;
 		if (Number(longitude) && Number(latitude))
 			profileObj.location = {
 				type: "Point",
