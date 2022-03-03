@@ -3,6 +3,12 @@ const Schema = mongoose.Schema;
 
 const therapists = new Schema(
 	{
+		user: {
+			type: Schema.Types.ObjectId,
+			ref: "profiles",
+			required: true,
+			index: true,
+		},
 		profile: {
 			type: Schema.Types.ObjectId,
 			ref: "profiles",
