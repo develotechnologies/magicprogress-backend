@@ -13,14 +13,15 @@ const imageMimeTypes = [
 ];
 
 exports.resizeImages = async (imagesData) => {
-	const { images, PATH } = imagesData;
-	const array = [];
-	if (images) {
-		for (let i = 0; i < images.length; i++) {
-			if (imageMimeTypes.includes(images[i].mimetype)) {
-				const buffer = images[i].buffer;
-				const id = uuid.v4() + ".jpeg";
-				try {
+	try {
+		const { images, PATH } = imagesData;
+		const array = [];
+		if (images) {
+			for (let i = 0; i < images.length; i++) {
+				if (imageMimeTypes.includes(images[i].mimetype)) {
+					const buffer = images[i].buffer;
+					const id = uuid.v4() + ".jpeg";
+
 					sharp(buffer)
 						.jpeg({
 							mozjpeg: true,
@@ -34,31 +35,31 @@ exports.resizeImages = async (imagesData) => {
 									: 65,
 							background: "white",
 						})
-						.toFile(PATH + id, (err, info) => {});
+						.toFile(PATH + id);
 					array.push({
 						...images[i],
 						path: id,
 					});
-				} catch (error) {
-					throw error;
 				}
 			}
-		}
-		return array;
-	} else return;
+			return array;
+		} else return;
+	} catch (error) {
+		throw error;
+	}
 };
 
 exports.resizeImagesWithThumbnails = async (imagesData) => {
-	const { images, PATH } = imagesData;
+	try {
+		const { images, PATH } = imagesData;
 
-	const array = [];
-	if (images) {
-		for (let i = 0; i < images.length; i++) {
-			if (imageMimeTypes.includes(images[i].mimetype)) {
-				const buffer = images[i].buffer;
-				const id = uuid.v4() + ".jpeg";
+		const array = [];
+		if (images) {
+			for (let i = 0; i < images.length; i++) {
+				if (imageMimeTypes.includes(images[i].mimetype)) {
+					const buffer = images[i].buffer;
+					const id = uuid.v4() + ".jpeg";
 
-				try {
 					sharp(buffer)
 						.resize({
 							width: 200,
@@ -66,7 +67,7 @@ exports.resizeImagesWithThumbnails = async (imagesData) => {
 							background: "white",
 						})
 						.jpeg({ mozjpeg: true })
-						.toFile(PATH + "thumbnails/" + id, (err, info) => {});
+						.toFile(PATH + "thumbnails/" + id);
 					sharp(buffer)
 						.jpeg({
 							mozjpeg: true,
@@ -80,16 +81,17 @@ exports.resizeImagesWithThumbnails = async (imagesData) => {
 									: 65,
 							background: "white",
 						})
-						.toFile(PATH + id, (err, info) => {});
+						.toFile(PATH + id);
 					array.push({
 						...images[i],
 						path: id,
 					});
-				} catch (error) {
-					throw error;
 				}
 			}
-		}
-		return array;
-	} else return;
+
+			return array;
+		} else return;
+	} catch (error) {
+		throw error;
+	}
 };

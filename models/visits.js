@@ -9,6 +9,11 @@ const visits = new Schema(
 			required: true,
 			index: true,
 		},
+		number: {
+			type: Number,
+			required: true,
+			index: true,
+		},
 		title: {
 			type: String,
 			trim: true,
@@ -20,7 +25,7 @@ const visits = new Schema(
 			trim: true,
 			required: true,
 		},
-		backImage: {
+		rightImage: {
 			type: String,
 			trim: true,
 			required: true,
@@ -30,7 +35,7 @@ const visits = new Schema(
 			trim: true,
 			required: true,
 		},
-		rightImage: {
+		backImage: {
 			type: String,
 			trim: true,
 			required: true,

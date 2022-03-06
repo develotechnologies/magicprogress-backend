@@ -12,7 +12,7 @@ const {
 	verifyUserToken,
 } = require("../middlewares/public/authenticator");
 const { sendOtp, verifyOtp } = require("../middlewares/public/otpManager");
-const { upload, uploadTemporary } = require("../middlewares/public/uploader");
+const { uploadTemporary } = require("../middlewares/public/uploader");
 const { resizeProfilePicture } = require("../middlewares/private/imageResizer");
 
 router
@@ -55,6 +55,11 @@ router.put(
 );
 
 router.route("/otp").post(verifyToken, verifyUser, sendOtp).put(sendOtp);
+
+router
+	.route("/password/email")
+	.post(usersController.emailResetPassword)
+	.put(usersController.resetPassword);
 
 router.get(
 	"/notifications",

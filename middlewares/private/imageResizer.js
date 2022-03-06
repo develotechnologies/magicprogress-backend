@@ -14,6 +14,7 @@ exports.resizeProfilePicture = async (req, res, next) => {
 			const imagesData = { images, PATH };
 
 			req.files.picture = await resizeImagesWithThumbnails(imagesData);
+
 			next();
 		} else {
 			next();

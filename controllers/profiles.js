@@ -1,4 +1,4 @@
-const moment = require("moment");
+const dayjs = require("dayjs");
 const { isValidObjectId } = require("mongoose");
 
 const { usersModel, profilesModel } = require("../models");
@@ -19,10 +19,9 @@ exports.updateProfile = async (req, res, next) => {
 		} = req.body;
 		const { picture } = req.files || {};
 		const profileObj = {};
-
 		if (firstname) profileObj.firstname = firstname;
 		if (lastname) profileObj.lastname = lastname;
-		if (birthdate && moment().isValid(birthdate))
+		if (birthdate && dayjs().isValid(birthdate))
 			profileObj.birthdate = birthdate;
 		if (gender) profileObj.gender = gender;
 		if (description) profileObj.description = description;
@@ -65,6 +64,7 @@ exports.updateUser = async (req, res, next) => {
 		const existsUser = await usersModel.findOne({ _id: req.user._id });
 		if (newPassword) {
 			await existsUser.setPassword(newPassword);
+			if (!existsUser.isPasswordSet) existsUser.isPasswordSet = true;
 		}
 		if (fcm && device) {
 			let alreadyExists = false;
