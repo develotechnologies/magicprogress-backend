@@ -4,6 +4,7 @@ const router = express.Router();
 
 const usersController = require("../controllers/users");
 const notificationsController = require("../controllers/notifications");
+const consultanciesController = require("../controllers/consultancies");
 const {
 	verifyToken,
 	verifyUser,
@@ -60,6 +61,11 @@ router
 	.route("/password/email")
 	.post(usersController.emailResetPassword)
 	.put(usersController.resetPassword);
+
+router
+	.route("/consultancies")
+	.post(verifyToken, verifyUser, consultanciesController.addConsultancy)
+	.get(verifyToken, verifyUser, consultanciesController.getConsultancies);
 
 router.get(
 	"/notifications",

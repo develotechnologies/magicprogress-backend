@@ -1,10 +1,15 @@
 const { isValidObjectId } = require("mongoose");
 
-const { usersModel, visitsModel, comparisonsModel } = require("../models");
+const {
+	usersModel,
+	visitsModel,
+	comparisonsModel,
+	consultanciesModel,
+} = require("../models");
 
 exports.addVisit = async (req, res, next) => {
 	try {
-		let { client } = req.body;
+		let { client, consultancy } = req.body;
 		const { images } = req.files || {};
 		const visitObj = {};
 
@@ -18,6 +23,19 @@ exports.addVisit = async (req, res, next) => {
 			else return next(new Error("Please enter valid client id!"));
 		else return next(new Error("Please enter client id!"));
 		visitObj.client = client;
+
+		if (consultancy)
+			if (isValidObjectId(consultancy))
+				if (await consultanciesModel.exists({ _id: consultancy }))
+					visitObj.consultancy = consultancy;
+				else return next(new Error("Consultancy not found!"));
+			else return next(new Error("Please enter valid consultancy id!"));
+		else {
+			const consultancyExists = await consultanciesModel.findOne({ client });
+			if (consultancyExists) consultancy = consultancyExists._id;
+			else return next(new Error("Consultancy not found!"));
+		}
+		visitObj.consultancy = consultancy;
 
 		if (images) {
 			images.forEach((image) => {
@@ -42,6 +60,11 @@ exports.addVisit = async (req, res, next) => {
 		visitObj.title = `Visit ${visitObj.number}`;
 
 		const visit = await visitsModel.create(visitObj);
+
+		await consultanciesModel.updateOne(
+			{ _id: consultancy },
+			{ $inc: { visitsCount: 1 } }
+		);
 
 		res.json({ success: true, visit });
 	} catch (error) {
@@ -92,7 +115,7 @@ exports.getAllVisits = async (req, res, next) => {
 		query.client = client;
 
 		const visits = await visitsModel
-			.find(query, { _id: 1 })
+			.find(query, { _id: 1, consultancy: 1 })
 			.populate({
 				path: "client",
 				select: "_id",

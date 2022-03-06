@@ -9,6 +9,12 @@ const visits = new Schema(
 			required: true,
 			index: true,
 		},
+		consultancy: {
+			type: Schema.Types.ObjectId,
+			ref: "consultancies",
+			required: true,
+			index: true,
+		},
 		number: {
 			type: Number,
 			required: true,

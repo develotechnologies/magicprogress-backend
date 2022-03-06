@@ -19,12 +19,17 @@ const notifications = new Schema(
 			ref: "users",
 			index: true,
 		},
-		therapist: {
+		messenger: {
 			type: mongoose.Schema.Types.ObjectId,
 			ref: "users",
 			index: true,
 		},
-		client: {
+		commenter: {
+			type: mongoose.Schema.Types.ObjectId,
+			ref: "users",
+			index: true,
+		},
+		replier: {
 			type: mongoose.Schema.Types.ObjectId,
 			ref: "users",
 			index: true,

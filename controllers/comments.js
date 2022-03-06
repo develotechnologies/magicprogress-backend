@@ -1,6 +1,7 @@
 const { isValidObjectId } = require("mongoose");
 
 const { repliesModel, commentsModel, comparisonsModel } = require("../models");
+const notificationsController = require("../controllers/notifications");
 
 exports.addComment = async (req, res, next) => {
 	try {
@@ -21,6 +22,7 @@ exports.addComment = async (req, res, next) => {
 			{ _id: comparison },
 			{ $inc: { commentsCount: 1 } }
 		);
+		await notificationsController.newCommentNotification(comment._id);
 
 		res.json({ success: true, comment });
 	} catch (error) {
