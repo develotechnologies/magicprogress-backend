@@ -219,12 +219,12 @@ exports.getUser = async (req, res, next) => {
 						populate: { path: "client", model: "clients" },
 					},
 				]);
-				if (response)
+				if (response) {
 					return res.json({
 						success: "true",
 						user: response,
 					});
-				else return next(new Error("User not found!"));
+				} else return next(new Error("User not found!"));
 			} else return next(new Error("Please enter valid user id!"));
 		else return next(new Error("Please enter user id!"));
 	} catch (error) {
@@ -404,7 +404,8 @@ exports.getAllUsers = async (req, res, next) => {
 	}
 };
 
-function calculateAge(dateString) {
-	var birthday = +new Date(dateString);
-	return ~~((Date.now() - birthday) / 31557600000);
-}
+const calculateAge = (birthdate) => {
+	return Math.floor(
+		(new Date() - new Date(birthdate)) / 1000 / 60 / 60 / 24 / 365
+	);
+};

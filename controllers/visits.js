@@ -115,7 +115,7 @@ exports.getAllVisits = async (req, res, next) => {
 		query.client = client;
 
 		const visits = await visitsModel
-			.find(query, { _id: 1, consultancy: 1 })
+			.find(query)
 			.populate({
 				path: "client",
 				select: "_id",
@@ -132,6 +132,7 @@ exports.getAllVisits = async (req, res, next) => {
 		const totalCount = await visitsModel.find(query).count();
 		res.json({
 			success: true,
+			totalCount,
 			totalPages: Math.ceil(totalCount / limit),
 			visits,
 		});
