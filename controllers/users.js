@@ -358,10 +358,12 @@ exports.getAllUsers = async (req, res, next) => {
 								lastname: 1,
 								gender: 1,
 								age: {
-									$divide: [
-										{ $subtract: [new Date(), "$birthdate"] },
-										365 * 24 * 60 * 60 * 1000,
-									],
+									$floor: {
+										$divide: [
+											{ $subtract: [new Date(), "$birthdate"] },
+											365 * 24 * 60 * 60 * 1000,
+										],
+									},
 								},
 								description: 1,
 								picture: 1,
