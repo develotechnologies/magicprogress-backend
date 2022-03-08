@@ -219,12 +219,16 @@ exports.getUser = async (req, res, next) => {
 						populate: { path: "client", model: "clients" },
 					},
 				]);
-				if (response)
+				if (response) {
+					if (response?.profile?.birthdate) {
+						var userDoc = JSON.parse(JSON.stringify(response._doc));
+						userDoc.profile.age = calculateAge(userDoc.profile.birthdate);
+					}
 					return res.json({
 						success: "true",
-						user: response,
+						user: userDoc,
 					});
-				else return next(new Error("User not found!"));
+				} else return next(new Error("User not found!"));
 			} else return next(new Error("Please enter valid user id!"));
 		else return next(new Error("Please enter user id!"));
 	} catch (error) {
