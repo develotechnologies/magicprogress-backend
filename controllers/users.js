@@ -73,20 +73,24 @@ exports.signup = async (req, res, next) => {
 				{ $inc: { therapistsCount: 1 } }
 			);
 		}
-
+		const userExists = await usersModel.findOne({ _id: user._id }).populate([
+			{
+				path: "profile",
+				populate: { path: "therapist", model: "therapists" },
+			},
+			{
+				path: "profile",
+				populate: { path: "client", model: "clients" },
+			},
+		]);
+		if (userExists?.profile?.birthdate) {
+			var userDoc = JSON.parse(JSON.stringify(userExists._doc));
+			userDoc.profile.age = calculateAge(userDoc.profile.birthdate);
+		}
 		const token = getToken({ _id: user._id });
 		return res.json({
 			success: true,
-			user: await usersModel.findOne({ _id: user._id }).populate([
-				{
-					path: "profile",
-					populate: { path: "therapist", model: "therapists" },
-				},
-				{
-					path: "profile",
-					populate: { path: "client", model: "clients" },
-				},
-			]),
+			user: userDoc,
 			token,
 		});
 	} catch (error) {
@@ -114,12 +118,16 @@ exports.login = async (req, res, next) => {
 			},
 		]);
 		if (userExists) {
+			if (userExists?.profile?.birthdate) {
+				var userDoc = JSON.parse(JSON.stringify(userExists._doc));
+				userDoc.profile.age = calculateAge(userDoc.profile.birthdate);
+			}
 		} else return next(new Error("User deleted!"));
 
 		const token = getToken({ _id: userExists._id });
 		return res.json({
 			success: true,
-			user: userExists,
+			user: userDoc,
 			token,
 		});
 	} catch (error) {
@@ -150,9 +158,9 @@ exports.editUserProfile = async (req, res, next) => {
 			next
 		);
 
-		return res.json({
-			success: responseProfileUpdate && responseUserUpdate,
-			user: await usersModel.findOne({ _id: user ?? req.user._id }).populate([
+		const userExists = await usersModel
+			.findOne({ _id: user ?? req.user._id })
+			.populate([
 				{
 					path: "profile",
 					populate: { path: "therapist", model: "therapists" },
@@ -161,7 +169,16 @@ exports.editUserProfile = async (req, res, next) => {
 					path: "profile",
 					populate: { path: "client", model: "clients" },
 				},
-			]),
+			]);
+
+		if (userExists?.profile?.birthdate) {
+			var userDoc = JSON.parse(JSON.stringify(userExists._doc));
+			userDoc.profile.age = calculateAge(userDoc.profile.birthdate);
+		}
+
+		return res.json({
+			success: responseProfileUpdate && responseUserUpdate,
+			user: userDoc,
 		});
 	} catch (error) {
 		next(error);
@@ -208,7 +225,7 @@ exports.getUser = async (req, res, next) => {
 		if (isMe) if (req?.user?._id) user = req.user._id;
 		if (user)
 			if (isValidObjectId(user)) {
-				const response = await usersModel.findOne({ _id: user }).populate([
+				const userExists = await usersModel.findOne({ _id: user }).populate([
 					{
 						path: "profile",
 						populate: { path: "therapist", model: "therapists" },
@@ -219,13 +236,13 @@ exports.getUser = async (req, res, next) => {
 						populate: { path: "client", model: "clients" },
 					},
 				]);
-				if (response) {
-					if (response?.profile?.birthdate) {
-						var userDoc = JSON.parse(JSON.stringify(response._doc));
+				if (userExists) {
+					if (userExists?.profile?.birthdate) {
+						var userDoc = JSON.parse(JSON.stringify(userExists._doc));
 						userDoc.profile.age = calculateAge(userDoc.profile.birthdate);
 					}
 					return res.json({
-						success: "true",
+						success: true,
 						user: userDoc,
 					});
 				} else return next(new Error("User not found!"));
