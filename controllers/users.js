@@ -219,12 +219,12 @@ exports.getUser = async (req, res, next) => {
 						populate: { path: "client", model: "clients" },
 					},
 				]);
-				if (response) {
+				if (response)
 					return res.json({
 						success: "true",
 						user: response,
 					});
-				} else return next(new Error("User not found!"));
+				else return next(new Error("User not found!"));
 			} else return next(new Error("Please enter valid user id!"));
 		else return next(new Error("Please enter user id!"));
 	} catch (error) {
@@ -332,7 +332,7 @@ exports.getAllUsers = async (req, res, next) => {
 		}
 		const aggregation = [
 			{ $match: query },
-			{ $project: { email: 1, phone: 1, profile: 1 } },
+			{ $project: { email: 1, phone: 1, profile: 1, status: 1 } },
 			{
 				$lookup: {
 					from: "profiles",
