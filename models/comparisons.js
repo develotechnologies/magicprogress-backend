@@ -17,7 +17,7 @@ const comparisons = new Schema(
 		},
 		client: {
 			type: Schema.Types.ObjectId,
-			ref: "clients",
+			ref: "users",
 			required: true,
 			index: true,
 		},

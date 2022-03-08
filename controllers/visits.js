@@ -171,12 +171,12 @@ exports.compareVisits = async (req, res, next) => {
 
 		if (comparisonExists) {
 		} else {
-			const existsVisit = await visitsModel.findOne({
+			const visitExists = await visitsModel.findOne({
 				$or: [{ _id: visit1 }, { _id: visit2 }],
 			});
 			comparisonObj.visit1 = visit1;
 			comparisonObj.visit2 = visit2;
-			comparisonObj.client = existsVisit;
+			comparisonObj.client = visitExists.client;
 			var comparison = await comparisonsModel.create(comparisonObj);
 		}
 
@@ -208,7 +208,7 @@ exports.getAllComparisons = async (req, res, next) => {
 
 		query.client = client;
 
-		const visits = await visitsModel
+		const comparisons = await comparisonsModel
 			.find(query)
 			.populate({
 				path: "client",
@@ -223,12 +223,12 @@ exports.getAllComparisons = async (req, res, next) => {
 			.sort({ createdAt: -1 })
 			.skip(page * limit)
 			.limit(limit);
-		const totalCount = await visitsModel.find(query).count();
+		const totalCount = await comparisonsModel.find(query).count();
 		res.json({
 			success: true,
 			totalCount,
 			totalPages: Math.ceil(totalCount / limit),
-			visits,
+			comparisons,
 		});
 	} catch (error) {
 		next(error);
