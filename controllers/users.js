@@ -357,6 +357,12 @@ exports.getAllUsers = async (req, res, next) => {
 								firstname: 1,
 								lastname: 1,
 								gender: 1,
+								age: {
+									$divide: [
+										{ $subtract: [new Date(), "$birthdate"] },
+										365 * 24 * 60 * 60 * 1000,
+									],
+								},
 								description: 1,
 								picture: 1,
 								client: 1,
@@ -395,3 +401,8 @@ exports.getAllUsers = async (req, res, next) => {
 		next(error);
 	}
 };
+
+function calculateAge(dateString) {
+	var birthday = +new Date(dateString);
+	return ~~((Date.now() - birthday) / 31557600000);
+}
