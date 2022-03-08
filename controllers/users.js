@@ -23,7 +23,7 @@ exports.signup = async (req, res, next) => {
 		const userObj = {};
 		if (username) userObj.username = username;
 		if (email) userObj.email = email;
-		if (type) userObj.type = type;
+		if (type) userObj.type = type ?? "client";
 		else userObj.type = "client";
 		if (phone) userObj.phone = phone;
 		var user = await usersModel.register(new usersModel(userObj), password);
