@@ -210,16 +210,26 @@ exports.getAllComparisons = async (req, res, next) => {
 
 		const comparisons = await comparisonsModel
 			.find(query)
-			.populate({
-				path: "client",
-				select: "_id",
-				populate: {
-					path: "profile",
-					model: "profiles",
-					select: "picture client",
-					// populate: { path: "client", model: "clients", select: "_id" },
+			.populate([
+				{
+					path: "client",
+					select: "_id",
+					populate: {
+						path: "profile",
+						model: "profiles",
+						select: "picture client",
+						// populate: { path: "client", model: "clients", select: "_id" },
+					},
 				},
-			})
+				{
+					path: "visit1",
+					select: "title",
+				},
+				{
+					path: "visit2",
+					select: "title",
+				},
+			])
 			.sort({ createdAt: -1 })
 			.skip(page * limit)
 			.limit(limit);
