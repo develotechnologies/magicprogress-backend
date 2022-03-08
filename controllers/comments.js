@@ -84,6 +84,7 @@ exports.getComments = async (req, res, next) => {
 		const totalCount = await commentsModel.find(query).count();
 		res.json({
 			success: true,
+			totalCount,
 			totalPages: Math.ceil(totalCount / limit),
 			comments,
 		});
@@ -154,6 +155,7 @@ exports.getReplies = async (req, res, next) => {
 		const totalCount = await repliesModel.find(query).count();
 		res.json({
 			success: true,
+			totalCount,
 			totalPages: Math.ceil(totalCount / limit),
 			replies,
 		});

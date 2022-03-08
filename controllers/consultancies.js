@@ -56,6 +56,7 @@ exports.getConsultancies = async (req, res, next) => {
 		const totalCount = await consultanciesModel.find(query).count();
 		res.json({
 			success: true,
+			totalCount,
 			totalPages: Math.ceil(totalCount / limit),
 			consultancies,
 		});

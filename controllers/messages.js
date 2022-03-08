@@ -90,6 +90,7 @@ exports.chat = async (req, res, next) => {
 			const totalCount = await messagesModel.find(query).count();
 			res.json({
 				success: true,
+				totalCount,
 				totalPages: Math.ceil(totalCount / limit),
 				messages,
 			});
@@ -145,6 +146,7 @@ exports.getChatters = async (req, res, next) => {
 		const totalCount = await conversationsModel.find(query).count();
 		res.json({
 			success: true,
+			totalCount,
 			totalPages: Math.ceil(totalCount / limit),
 			chatters,
 		});
