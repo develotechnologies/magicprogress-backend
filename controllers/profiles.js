@@ -61,7 +61,7 @@ exports.updateUser = async (req, res, next) => {
 		if (phone) userObj.phone = phone;
 		if (status) userObj.status = status;
 		if (email) userObj.email = email;
-		const userExists = await usersModel.findOne({ _id: req.user._id });
+		const userExists = await usersModel.findOne({ _id: user ?? req.user._id });
 		if (newPassword) {
 			await userExists.setPassword(newPassword);
 			if (userExists.isPasswordSet) {

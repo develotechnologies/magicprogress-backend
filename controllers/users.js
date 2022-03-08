@@ -131,12 +131,12 @@ exports.editUserProfile = async (req, res, next) => {
 	try {
 		const { user } = req.body;
 		if (user) {
-			if (req.user.type === "admin")
+			if (req.user.type === "admin" || req.user.type === "therapist")
 				if (isValidObjectId(user))
 					if (await usersModel.exists({ _id: user })) {
 					} else return next(new Error("User not found!"));
 				else return next(new Error("Please enter valid user id!"));
-			else return next(new Error("Unauthorized as ADMIN!"));
+			else return next(new Error("Unauthorized as THERAPIST || ADMIN!"));
 		}
 
 		const responseUserUpdate = await profilesController.updateUser(
@@ -152,7 +152,7 @@ exports.editUserProfile = async (req, res, next) => {
 
 		return res.json({
 			success: responseProfileUpdate && responseUserUpdate,
-			user: await usersModel.findOne({ _id: req.user._id }).populate([
+			user: await usersModel.findOne({ _id: user ?? req.user._id }).populate([
 				{
 					path: "profile",
 					populate: { path: "therapist", model: "therapists" },
@@ -332,7 +332,7 @@ exports.getAllUsers = async (req, res, next) => {
 		}
 		const aggregation = [
 			{ $match: query },
-			{ $project: { profile: 1 } },
+			{ $project: { email: 1, phone: 1, profile: 1 } },
 			{
 				$lookup: {
 					from: "profiles",
@@ -356,6 +356,7 @@ exports.getAllUsers = async (req, res, next) => {
 							$project: {
 								firstname: 1,
 								lastname: 1,
+								gender: 1,
 								description: 1,
 								picture: 1,
 								client: 1,
@@ -386,6 +387,7 @@ exports.getAllUsers = async (req, res, next) => {
 
 		return res.status(200).json({
 			success: true,
+			totalCount: totalCount[0]?.count ?? 0,
 			totalPages: Math.ceil((totalCount[0]?.count ?? 0) / limit),
 			users,
 		});
