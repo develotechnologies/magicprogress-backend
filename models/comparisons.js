@@ -15,6 +15,12 @@ const comparisons = new Schema(
 			required: true,
 			index: true,
 		},
+		client: {
+			type: Schema.Types.ObjectId,
+			ref: "clients",
+			required: true,
+			index: true,
+		},
 		commentsCount: {
 			type: Number,
 			default: 0,

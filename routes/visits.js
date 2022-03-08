@@ -19,12 +19,10 @@ router
 	)
 	.get(verifyToken, verifyUser, visitsController.getAllVisits);
 
-router.post(
-	"/compare",
-	verifyToken,
-	verifyUser,
-	visitsController.compareVisits
-);
+router
+	.route("/comparisons")
+	.post(verifyToken, verifyUser, visitsController.compareVisits)
+	.get(verifyToken, verifyUser, visitsController.compareVisits);
 
 router.get("/:visit", verifyToken, verifyUser, visitsController.getVisit);
 

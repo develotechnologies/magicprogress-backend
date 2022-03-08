@@ -378,6 +378,7 @@ exports.getAllUsers = async (req, res, next) => {
 								firstname: 1,
 								lastname: 1,
 								gender: 1,
+								birthdate,
 								age: {
 									$floor: {
 										$divide: [

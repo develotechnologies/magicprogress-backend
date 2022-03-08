@@ -171,12 +171,65 @@ exports.compareVisits = async (req, res, next) => {
 
 		if (comparisonExists) {
 		} else {
+			const existsVisit = await visitsModel.findOne({
+				$or: [{ _id: visit1 }, { _id: visit2 }],
+			});
 			comparisonObj.visit1 = visit1;
 			comparisonObj.visit2 = visit2;
+			comparisonObj.client = existsVisit;
 			var comparison = await comparisonsModel.create(comparisonObj);
 		}
 
 		res.json({ success: true, comparison: comparisonExists ?? comparison });
+	} catch (error) {
+		next(error);
+	}
+};
+
+exports.getAllComparisons = async (req, res, next) => {
+	try {
+		let { limit, page, client, q } = req.query;
+		limit = Number(limit);
+		page = Number(page);
+		if (!limit) limit = 10;
+		if (!page) page = 0;
+		if (page) page = page - 1;
+		const query = {};
+
+		if (req.user.type === "client") client = req.user._id;
+		else if (client)
+			if (isValidObjectId(client))
+				if (await usersModel.exists({ _id: client, type: "client" }))
+					if (req.user.type === "therapist") {
+					} else return next(new Error("Unauthorized as Therapist!"));
+				else return next(new Error("Client not found!"));
+			else return next(new Error("Please enter valid client id!"));
+		else return next(new Error("Please enter client id!"));
+
+		query.client = client;
+
+		const visits = await visitsModel
+			.find(query)
+			.populate({
+				path: "client",
+				select: "_id",
+				populate: {
+					path: "profile",
+					model: "profiles",
+					select: "picture client",
+					// populate: { path: "client", model: "clients", select: "_id" },
+				},
+			})
+			.sort({ createdAt: -1 })
+			.skip(page * limit)
+			.limit(limit);
+		const totalCount = await visitsModel.find(query).count();
+		res.json({
+			success: true,
+			totalCount,
+			totalPages: Math.ceil(totalCount / limit),
+			visits,
+		});
 	} catch (error) {
 		next(error);
 	}
