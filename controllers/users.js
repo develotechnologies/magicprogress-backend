@@ -325,7 +325,7 @@ exports.getAllUsers = async (req, res, next) => {
 		} else query.type = "client";
 		if (req.user.type === "admin") {
 			if (status) query.status = status;
-		} else query.status = "active";
+		} else query.status = { $ne: "deleted" };
 		if (q && q.trim() !== "") {
 			var wildcard = [
 				{
