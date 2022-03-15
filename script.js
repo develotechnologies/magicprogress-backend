@@ -54,41 +54,41 @@ async function func() {
 				useUnifiedTopology: true,
 			}
 		);
-		const therapistUser = await usersModel.register(
-			new usersModel(therapistUserObj),
-			"Appuser123"
-		);
-		const therapistPath = Path.resolve(
-			__dirname,
-			"public",
-			"sandbox",
-			"images",
-			"profile_pictures",
-			url
-		);
-		await downloadImage(therapistImage, therapistPath);
-		const therapistProfile = await profilesModel.create({
-			user: therapistUser._id,
-			...therapistProfileObj,
-		});
+		// const therapistUser = await usersModel.register(
+		// 	new usersModel(therapistUserObj),
+		// 	"Appuser123"
+		// );
+		// const therapistPath = Path.resolve(
+		// 	__dirname,
+		// 	"public",
+		// 	"sandbox",
+		// 	"images",
+		// 	"profile_pictures",
+		// 	url
+		// );
+		// await downloadImage(therapistImage, therapistPath);
+		// const therapistProfile = await profilesModel.create({
+		// 	user: therapistUser._id,
+		// 	...therapistProfileObj,
+		// });
 
-		const therapistTherapist = await therapistsModel.create({
-			user: therapistUser._id,
-			profile: therapistProfile._id,
-		});
-		therapistUser.profile = therapistProfile._id;
-		therapistProfile.therapist = therapistTherapist._id;
-		await therapistUser.save();
-		await therapistProfile.save();
-		// const therapistUser = {};
-		// therapistUser._id = mongoose.Types.ObjectId("622ed9fa78aab5114d7ade23");
+		// const therapistTherapist = await therapistsModel.create({
+		// 	user: therapistUser._id,
+		// 	profile: therapistProfile._id,
+		// });
+		// therapistUser.profile = therapistProfile._id;
+		// therapistProfile.therapist = therapistTherapist._id;
+		// await therapistUser.save();
+		// await therapistProfile.save();
+		const therapistUser = {};
+		therapistUser._id = mongoose.Types.ObjectId("6230252f636ac17a503f8a9c");
 
 		const {
 			__collections__: { DevelopmentUsers },
 		} = backup;
 		var arr = Object.values(DevelopmentUsers).map((i) => i);
 		console.log(arr.length, "accounts creation started!");
-		for (let i = 0; i < arr.length / 2; i++) {
+		for (let i = 155; i < arr.length; i++) {
 			const element = arr[i];
 			const {
 				email,
@@ -103,6 +103,7 @@ async function func() {
 				userImage,
 				password,
 				Visits,
+				reviews,
 				isBlocked,
 			} = element;
 			console.log(email, "account creation started...");
