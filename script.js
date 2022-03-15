@@ -88,7 +88,7 @@ async function func() {
 		} = backup;
 		var arr = Object.values(DevelopmentUsers).map((i) => i);
 		console.log(arr.length, "accounts creation started!");
-		for (let i = 155; i < arr.length; i++) {
+		for (let i = 0; i < arr.length; i++) {
 			const element = arr[i];
 			const {
 				email,
@@ -107,70 +107,175 @@ async function func() {
 				isBlocked,
 			} = element;
 			console.log(email, "account creation started...");
-			var userObj = {
-				type: "client",
-				status: "active",
-				isPasswordSet: true,
-				email,
-				phone,
-				status: isBlocked ? "blocked" : "active",
-			};
-			if (fcmToken)
-				userObj.fcm = [{ device: `device_${i + 1}`, fcm: fcmToken }];
-			var user = await usersModel.register(
-				new usersModel(userObj),
-				password.toString()
-			);
-			if (userImage) {
-				url = userImage.split("?")[0];
-				url = url.split("/").pop();
-				const path = Path.resolve(
-					__dirname,
-					"public",
-					"sandbox",
-					"images",
-					"profile_pictures",
-					url
-				);
-				await downloadImage(userImage, path);
-			}
-			var profileObj = {
-				user: user._id,
-				firstname: firstname ?? "undefined",
-				lastname: !lastname || lastname == "" ? "undefined" : lastname,
-				birthdate: moment().subtract(Number(age) ?? 0, "year"),
-				description,
-				address,
-				gender: gender == "Male" ? "male" : "female",
-				picture: url,
-			};
-			var profile = await profilesModel.create(profileObj);
-			user.profile = profile._id;
-			await user.save();
-			var client = await clientsModel.create({
-				profile: profile._id,
-				user: user._id,
-			});
-			profile.client = client._id;
-			await profile.save();
+			// var userObj = {
+			// 	type: "client",
+			// 	status: "active",
+			// 	isPasswordSet: true,
+			// 	email,
+			// 	phone,
+			// 	status: isBlocked ? "blocked" : "active",
+			// };
+			// if (fcmToken)
+			// 	userObj.fcm = [{ device: `device_${i + 1}`, fcm: fcmToken }];
+			// var user = await usersModel.register(
+			// 	new usersModel(userObj),
+			// 	password.toString()
+			// );
+			// if (userImage) {
+			// 	url = userImage.split("?")[0];
+			// 	url = url.split("/").pop();
+			// 	const path = Path.resolve(
+			// 		__dirname,
+			// 		"public",
+			// 		"sandbox",
+			// 		"images",
+			// 		"profile_pictures",
+			// 		url
+			// 	);
+			// 	await downloadImage(userImage, path);
+			// }
+			// var profileObj = {
+			// 	user: user._id,
+			// 	firstname: firstname ?? "undefined",
+			// 	lastname: !lastname || lastname == "" ? "undefined" : lastname,
+			// 	birthdate: moment().subtract(Number(age) ?? 0, "year"),
+			// 	description,
+			// 	address,
+			// 	gender: gender == "Male" ? "male" : "female",
+			// 	picture: url,
+			// };
+			// var profile = await profilesModel.create(profileObj);
+			// user.profile = profile._id;
+			// await user.save();
+			// var client = await clientsModel.create({
+			// 	profile: profile._id,
+			// 	user: user._id,
+			// });
+			// profile.client = client._id;
+			// await profile.save();
 
-			const consultancyObj = {};
-			consultancyObj.client = user._id;
-			consultancyObj.therapist = therapistUser._id;
-			const consultancyExists = await consultanciesModel.create(consultancyObj);
-			await therapistsModel.updateOne(
-				{ user: therapistUser._id },
-				{ $inc: { clientsCount: 1 } }
-			);
-			await clientsModel.updateOne(
-				{ user: user._id },
-				{ $inc: { therapistsCount: 1 } }
-			);
+			// const consultancyObj = {};
+			// consultancyObj.client = user._id;
+			// consultancyObj.therapist = therapistUser._id;
+			// const consultancyExists = await consultanciesModel.create(consultancyObj);
+			// await therapistsModel.updateOne(
+			// 	{ user: therapistUser._id },
+			// 	{ $inc: { clientsCount: 1 } }
+			// );
+			// await clientsModel.updateOne(
+			// 	{ user: user._id },
+			// 	{ $inc: { therapistsCount: 1 } }
+			// );
 
-			if (Visits && Array.isArray(Visits)) {
-				for (let j = 0; j < Visits.length; j++) {
-					const visit = Visits[j];
-					const { time, visitImages } = visit;
+			// if (Visits && Array.isArray(Visits)) {
+			// 	for (let j = 0; j < Visits.length; j++) {
+			// 		const visit = Visits[j];
+			// 		const { time, visitImages } = visit;
+			// 		if (
+			// 			visitImages &&
+			// 			Array.isArray(visitImages) &&
+			// 			visitImages.length === 4
+			// 		) {
+			// 			const visitObj = {};
+			// 			visitObj.consultancy = consultancyExists._id;
+			// 			visitObj.number = j + 1;
+			// 			visitObj.title = `Visit ${j + 1}`;
+			// 			visitObj.client = user._id;
+			// 			if (time) visitObj.createdAt = new Date(time);
+			// 			if (
+			// 				visitImages &&
+			// 				Array.isArray(visitImages) &&
+			// 				visitImages.length === 4
+			// 			) {
+			// 				url = visitImages[0].split("?")[0];
+			// 				url = url.split("/").pop();
+			// 				let path = Path.resolve(
+			// 					__dirname,
+			// 					"public",
+			// 					"sandbox",
+			// 					"images",
+			// 					"visits",
+			// 					url
+			// 				);
+			// 				isError = false;
+			// 				try {
+			// 					await downloadImage(visitImages[0], path);
+			// 				} catch (error) {
+			// 					isError = true;
+			// 					visitObj.frontImage = defaultFRONT;
+			// 				}
+			// 				if (!isError) visitObj.frontImage = url;
+
+			// 				url = visitImages[1].split("?")[0];
+			// 				url = url.split("/").pop();
+			// 				path = Path.resolve(
+			// 					__dirname,
+			// 					"public",
+			// 					"sandbox",
+			// 					"images",
+			// 					"visits",
+			// 					url
+			// 				);
+			// 				isError = false;
+			// 				try {
+			// 					await downloadImage(visitImages[1], path);
+			// 				} catch (error) {
+			// 					isError = true;
+			// 					visitObj.rightImage = defaultRIGHT;
+			// 				}
+			// 				if (!isError) visitObj.rightImage = url;
+
+			// 				url = visitImages[2].split("?")[0];
+			// 				url = url.split("/").pop();
+			// 				path = Path.resolve(
+			// 					__dirname,
+			// 					"public",
+			// 					"sandbox",
+			// 					"images",
+			// 					"visits",
+			// 					url
+			// 				);
+			// 				isError = false;
+			// 				try {
+			// 					await downloadImage(visitImages[2], path);
+			// 				} catch (error) {
+			// 					isError = true;
+			// 					visitObj.leftImage = defaultLEFT;
+			// 				}
+			// 				if (!isError) visitObj.leftImage = url;
+
+			// 				url = visitImages[3].split("?")[0];
+			// 				url = url.split("/").pop();
+			// 				path = Path.resolve(
+			// 					__dirname,
+			// 					"public",
+			// 					"sandbox",
+			// 					"images",
+			// 					"visits",
+			// 					url
+			// 				);
+			// 				isError = false;
+			// 				try {
+			// 					await downloadImage(visitImages[3], path);
+			// 				} catch (error) {
+			// 					isError = true;
+			// 					visitObj.backImage = defaultBACK;
+			// 				}
+			// 				if (!isError) visitObj.backImage = url;
+			// 			}
+			// 			await visitsModel.create(visitObj);
+			// 			await consultanciesModel.updateOne(
+			// 				{ _id: consultancyExists._id },
+			// 				{ $inc: { visitsCount: 1 } }
+			// 			);
+			// 			console.log("visit", j + 1, "of", Visits.length, "added!");
+			// 		}
+			// 	}
+			// }
+			if (reviews && Array.isArray(reviews)) {
+				for (let j = 0; j < reviews.length; j++) {
+					const comment = reviews[j];
+					const { time, visitImages } = comment;
 					if (
 						visitImages &&
 						Array.isArray(visitImages) &&

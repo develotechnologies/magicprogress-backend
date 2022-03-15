@@ -95,8 +95,18 @@ app.use("/public/", express.static(path.join("public/")));
 
 app.use("/api/v1", indexRouter);
 
-app.get("/*", (req, res, next) => {
-	res.sendFile(path.join(__dirname, "/public/images/unnamed.webp"));
+// app.get("/*", (req, res, next) => {
+// 	var url = req.query.url;
+// 	res.sendFile(path.join(__dirname, url ?? "/public/images/unnamed.webp"));
+// });
+app.get("/public/images/*", (req, res, next) => {
+	var url = req.originalUrl.split("url=")[1];
+	res.sendFile(
+		path.join(
+			__dirname,
+			url ? "/public/images/" + url : "/public/images/unnamed.webp"
+		)
+	);
 });
 
 // catch 404 and forward to error handler
