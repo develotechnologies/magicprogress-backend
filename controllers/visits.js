@@ -41,13 +41,13 @@ exports.addVisit = async (req, res, next) => {
 			images.forEach((image) => {
 				if (image.path) {
 					if (image.originalname === "front.jpg")
-						visitObj.frontImage = image.filename;
+						visitObj.frontImage = image.path;
 					else if (image.originalname === "right.jpg")
-						visitObj.rightImage = image.filename;
+						visitObj.rightImage = image.path;
 					else if (image.originalname === "left.jpg")
-						visitObj.leftImage = image.filename;
+						visitObj.leftImage = image.path;
 					else if (image.originalname === "back.jpg")
-						visitObj.backImage = image.filename;
+						visitObj.backImage = image.path;
 				}
 			});
 		} else return next(new Error("Please add images!"));

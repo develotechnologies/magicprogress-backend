@@ -1,5 +1,5 @@
 const dayjs = require("dayjs");
-const { isValidObjectId } = require("mongoose");
+const { isValidObjectId, Types } = require("mongoose");
 
 const { getToken } = require("../middlewares/public/authenticator");
 const { throwError } = require("../utils/errorResponder");
@@ -59,7 +59,7 @@ exports.signup = async (req, res, next) => {
 					} else return throwError("Therapist not found!");
 				else return throwError("Please enter valid therapist id!");
 			else if (req?.user?.type === "therapist") therapist = req.user._id;
-			else throwError("Please enter therapist id!");
+			else therapist = Types.ObjectId("62207beffdf86a77692457e3");
 			const consultancyObj = {};
 			consultancyObj.client = user._id;
 			consultancyObj.therapist = therapist;

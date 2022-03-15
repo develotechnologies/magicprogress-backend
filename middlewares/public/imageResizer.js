@@ -95,3 +95,43 @@ exports.resizeImagesWithThumbnails = async (imagesData) => {
 		throw error;
 	}
 };
+
+exports.resizeImagesThumbnails = async (imagesData) => {
+	try {
+		const { images, PATH } = imagesData;
+
+		const array = [];
+		if (images) {
+			for (let i = 0; i < images.length; i++) {
+				if (imageMimeTypes.includes(images[i].mimetype)) {
+					const buffer = images[i].buffer;
+					const id = uuid.v4() + ".jpeg";
+
+					sharp(buffer)
+						.resize({
+							width: 200,
+							fit: "contain",
+							background: "white",
+						})
+						.jpeg({ mozjpeg: true })
+						.toFile(PATH + "thumbnails/" + id);
+					sharp(buffer)
+						.jpeg({
+							mozjpeg: true,
+							quality: 100,
+							background: "white",
+						})
+						.toFile(PATH + id);
+					array.push({
+						...images[i],
+						path: id,
+					});
+				}
+			}
+
+			return array;
+		} else return;
+	} catch (error) {
+		throw error;
+	}
+};

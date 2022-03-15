@@ -1,20 +1,21 @@
 const express = require("express");
 const router = express.Router();
 
-const { VISITS_IMAGES_DIRECTORY } = require("../configs/directories");
 const visitsController = require("../controllers/visits");
+const { resizeVisitImages } = require("../middlewares/private/imageResizer");
 const {
 	verifyToken,
 	verifyUser,
 } = require("../middlewares/public/authenticator");
-const { upload } = require("../middlewares/public/uploader");
+const { uploadTemporary } = require("../middlewares/public/uploader");
 
 router
 	.route("/")
 	.post(
 		verifyToken,
 		verifyUser,
-		upload(VISITS_IMAGES_DIRECTORY).fields([{ name: "images", maxCount: 4 }]),
+		uploadTemporary.fields([{ name: "images", maxCount: 4 }]),
+		resizeVisitImages,
 		visitsController.addVisit
 	)
 	.get(verifyToken, verifyUser, visitsController.getAllVisits);
