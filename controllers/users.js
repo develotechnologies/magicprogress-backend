@@ -16,6 +16,7 @@ const sendEmail = require("../utils/nodeMailer");
 
 exports.signup = async (req, res, next) => {
 	try {
+		console.log("req.body", req.body);
 		let { therapist } = req.body;
 		const { username, email, password, phone, type } = req.body;
 		const { firstname, lastname, gender, birthdate, description } = req.body;

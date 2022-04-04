@@ -129,7 +129,6 @@ exports.newCommentNotification = async (comment, callback) => {
 			await notificationsModel.create({
 				type: "new-comment",
 				text: body,
-				comment: commentExists._id,
 				commenter: commentExists.user,
 				user: user._id,
 			});
