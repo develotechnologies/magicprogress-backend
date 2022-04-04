@@ -92,7 +92,7 @@ exports.resizeImagesWithThumbnails = async (imagesData) => {
 			return array;
 		} else return;
 	} catch (error) {
-		return error;
+		throw error;
 	}
 };
 
