@@ -22,6 +22,7 @@ exports.addComment = async (req, res, next) => {
 			{ _id: comparison },
 			{ $inc: { commentsCount: 1 } }
 		);
+		console.log("comment", comment);
 		await notificationsController.newCommentNotification(comment._id);
 
 		res.json({ success: true, comment });

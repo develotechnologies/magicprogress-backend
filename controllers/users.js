@@ -60,7 +60,11 @@ exports.signup = async (req, res, next) => {
 					} else return throwError("Therapist not found!");
 				else return throwError("Please enter valid therapist id!");
 			else if (req?.user?.type === "therapist") therapist = req.user._id;
-			else therapist = Types.ObjectId("62207beffdf86a77692457e3");
+			else {
+				const therapistExists = await usersModel.findOne({ type: "therapist" });
+				if (therapistExists) therapist = therapistExists._id;
+				else return next(new Error("No therapist found!"));
+			}
 			const consultancyObj = {};
 			consultancyObj.client = user._id;
 			consultancyObj.therapist = therapist;
