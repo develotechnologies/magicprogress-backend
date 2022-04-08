@@ -118,9 +118,6 @@ exports.newCommentNotification = async (comment, callback) => {
 				user = commentExists.comparison.visit1.consultancy.client;
 			else if (commentExists.user.type === "client")
 				user = commentExists.comparison.visit1.consultancy.therapist;
-			console.log("commentExists", commentExists.comparison.visit1.consultancy);
-			console.log("user", user);
-			console.log("comment", comment);
 
 			const title = `New Comment from ${commentExists.user.profile.firstname}`;
 			let body = `{"user":"${commentExists.user._id}"} added a comment on the visits comparison`;
