@@ -39,7 +39,6 @@ exports.resizeVisitImages = async (req, res, next) => {
 
 			// imagesData contains 1.image_name 2.image_path
 			const imagesData = { images, PATH };
-
 			req.files.images = await resizeImagesThumbnails(imagesData);
 
 			next();

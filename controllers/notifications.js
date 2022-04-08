@@ -76,12 +76,7 @@ exports.newMessageNotification = async (message, callback) => {
 			});
 			body = `New message from ${messageExists.userFrom.profile.firstname}!`;
 			await messageExists.userTo.fcms.forEach(async (element) => {
-				await firebaseManager.sendNotification(
-					element.fcm,
-					title,
-					body,
-					messageExists
-				);
+				await firebaseManager.sendNotification(element.fcm, title, body);
 			});
 			// callback();
 			return;
@@ -134,12 +129,7 @@ exports.newCommentNotification = async (comment, callback) => {
 			});
 			body = `${commentExists.user.profile.firstname} ${commentExists.user.profile.lastname} added a comment on the visits comparison`;
 			await user.fcms.forEach(async (element) => {
-				await firebaseManager.sendNotification(
-					element.fcm,
-					title,
-					body,
-					commentExists
-				);
+				await firebaseManager.sendNotification(element.fcm, title, body);
 			});
 			// callback();
 			return;
