@@ -10,6 +10,7 @@ const {
 const { verifyTherapist } = require("../middlewares/private/authenticator");
 const { uploadTemporary } = require("../middlewares/public/uploader");
 const { resizeProfilePicture } = require("../middlewares/private/imageResizer");
+const { uploadPicture } = require("../middlewares/private/filesUploader");
 
 router
 	.route("/")
@@ -17,14 +18,14 @@ router
 		verifyToken,
 		verifyTherapist,
 		uploadTemporary.fields([{ name: "picture", maxCount: 1 }]),
-		resizeProfilePicture,
+		uploadPicture,
 		usersController.signup
 	)
 	.put(
 		verifyToken,
 		verifyUser,
 		uploadTemporary.fields([{ name: "picture", maxCount: 1 }]),
-		resizeProfilePicture,
+		uploadPicture,
 		usersController.editUserProfile
 	)
 	.get(verifyToken, verifyTherapist, usersController.getAllUsers);
