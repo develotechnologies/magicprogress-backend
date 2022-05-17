@@ -1,5 +1,6 @@
 const AWS = require("aws-sdk");
 var uuid = require("uuid").v4;
+const mime = require("mime-types");
 const { AWS_NAME, AWS_ACCESS_KEY, AWS_SECRET_KEY, AWS_REGION } = process.env;
 const s3Client = new AWS.S3({
 	apiVersion: "2006-03-01",
@@ -8,11 +9,6 @@ const s3Client = new AWS.S3({
 	// ServerSideEncryption: "AES256",
 	region: AWS_REGION,
 });
-const mimetype = {
-	"image/jpeg": ".jpeg",
-	"image/jpg": ".jpg",
-	"image/png": ".png",
-};
 
 exports.awsUploadSingle = async (req, res, next) => {
 	var { file } = req;
@@ -59,59 +55,12 @@ exports.deleteAwsObject = (url) => {
 	});
 };
 
-exports.awsUploadImage = (req, res, next) => {
-	if (req.file) {
-		var file_name = "images/" + uuid();
-		file_name += mimetype[req.file.mimetype];
-		const uploadParams = {
-			Bucket: AWS_NAME,
-			Key: file_name, // pass key
-			ContentType: req.file.mimetype,
-			Body: req.file.buffer, // pass file body
-		};
-		s3Client.upload(uploadParams, async (err, data) => {
-			if (err) {
-				res.status(500).send({ error: "Error -> " + err });
-			} else {
-				req.imagePath = data.Location;
-				// console.log(req.imagePath);
-				next();
-			}
-		});
-	} else {
-		req.imagePath = null;
-		next();
-	}
-};
-
-exports.awsUploadAudio = (req, res, next) => {
-	if (req.file) {
-		var file_name = "audio/" + uuid();
-		file_name += req.file.originalname;
-		const uploadParams = {
-			Bucket: AWS_NAME,
-			Key: file_name, // pass key
-			ContentType: req.file.mimetype,
-			Body: req.file.buffer, // pass file body
-		};
-		s3Client.upload(uploadParams, async (err, data) => {
-			if (err) {
-				res.status(500).send({ error: "Error -> " + err });
-			} else {
-				req.audio = data.Location;
-				// console.log(req.imagePath);
-				next();
-			}
-		});
-	} else {
-		req.imagePath = null;
-		next();
-	}
-};
-exports.upload = async (file) => {
+exports.upload = async (file, directory) => {
 	const fileObj = Array.isArray(file) ? file[0] : file;
-	var file_name = uuid();
-	file_name += mimetype[fileObj.mimetype];
+	let file_name = uuid();
+	const fileExtension = mime.extension(fileObj.mimetype);
+	file_name += "." + fileExtension;
+	if (directory) file_name = `${directory}/${file_name}`;
 	const uploadParams = {
 		Bucket: AWS_NAME,
 		Key: file_name, // pass key
