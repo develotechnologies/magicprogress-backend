@@ -7,17 +7,18 @@ const {
 	verifyUser,
 } = require("../middlewares/public/authenticator");
 
-const { upload } = require("../middlewares/public/uploader");
+const { uploadTemporary } = require("../middlewares/public/uploader");
 const { ATTACHMENTS_DIRECTORY } = require("../configs/directories");
+const { uploadAttachments } = require("../middlewares/private/filesUploader");
 
 router
 	.route("/")
 	.post(
 		verifyToken,
 		verifyUser,
-		upload(ATTACHMENTS_DIRECTORY).fields([
-			{ name: "attachments", maxCount: 10 },
-		]),
+
+		uploadTemporary.fields([{ name: "attachments", maxCount: 4 }]),
+		uploadAttachments,
 		messagesController.send
 	)
 	.get(verifyToken, verifyUser, messagesController.chat)

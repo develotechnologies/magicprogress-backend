@@ -16,7 +16,6 @@ const sendEmail = require("../utils/nodeMailer");
 
 exports.signup = async (req, res, next) => {
 	try {
-		console.log("req.body", req.body);
 		let { therapist } = req.body;
 		const { username, email, password, phone, type } = req.body;
 		const { firstname, lastname, gender, birthdate, description } = req.body;
@@ -38,6 +37,7 @@ exports.signup = async (req, res, next) => {
 		if (birthdate && dayjs().isValid(birthdate))
 			profileObj.birthdate = birthdate;
 		if (picture && picture[0].path) profileObj.picture = picture[0].path;
+
 		var profile = await profilesModel.create(profileObj);
 
 		user.profile = profile._id;

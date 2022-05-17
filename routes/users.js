@@ -15,19 +15,20 @@ const {
 const { sendOtp, verifyOtp } = require("../middlewares/public/otpManager");
 const { uploadTemporary } = require("../middlewares/public/uploader");
 const { resizeProfilePicture } = require("../middlewares/private/imageResizer");
+const { uploadPicture } = require("../middlewares/private/filesUploader");
 
 router
 	.route("/")
 	.post(
 		uploadTemporary.fields([{ name: "picture", maxCount: 1 }]),
-		resizeProfilePicture,
+		uploadPicture,
 		usersController.signup
 	)
 	.put(
 		verifyToken,
 		verifyUser,
 		uploadTemporary.fields([{ name: "picture", maxCount: 1 }]),
-		resizeProfilePicture,
+		uploadPicture,
 		usersController.editUserProfile
 	)
 	.get(verifyToken, verifyAdmin, usersController.getAllUsers);

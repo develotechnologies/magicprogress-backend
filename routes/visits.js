@@ -8,6 +8,7 @@ const {
 	verifyUser,
 } = require("../middlewares/public/authenticator");
 const { uploadTemporary } = require("../middlewares/public/uploader");
+const { uploadImages } = require("../middlewares/private/filesUploader");
 
 router
 	.route("/")
@@ -15,7 +16,7 @@ router
 		verifyToken,
 		verifyUser,
 		uploadTemporary.fields([{ name: "images", maxCount: 4 }]),
-		resizeVisitImages,
+		uploadImages,
 		visitsController.addVisit
 	)
 	.get(verifyToken, verifyUser, visitsController.getAllVisits);

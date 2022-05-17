@@ -3,6 +3,7 @@ const { isValidObjectId } = require("mongoose");
 
 const { usersModel, profilesModel } = require("../models");
 const { deleteProfilePicture } = require("../middlewares/private/deleter");
+const s3BucketManager = require("../middlewares/public/s3BucketManager");
 
 exports.updateProfile = async (req, res, next) => {
 	try {
@@ -31,12 +32,16 @@ exports.updateProfile = async (req, res, next) => {
 				coordinates: [Number(longitude), Number(latitude)],
 			};
 		if (picture && picture[0].path) {
-			if (req.user.profile.picture)
+			if (req.user.profile.picture) {
 				deleteProfilePicture(req.user.profile.picture);
+
+				s3BucketManager.deleteAwsObject(req.user.profile.picture);
+			}
 			profileObj.picture = picture[0].path;
 		}
 		if (removePicture === "true") {
 			deleteProfilePicture(req.user.profile.picture);
+			s3BucketManager.deleteAwsObject(req.user.profile.picture);
 			profileObj.picture = "";
 		}
 		const response = await profilesModel.updateOne(
