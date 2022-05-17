@@ -31,6 +31,7 @@ exports.jwtpassport = passport.use(
 					err = new Error("Account deleted!");
 					return done(err, false);
 				} else if (user) {
+					user.populate("profile");
 					return done(null, user);
 				} else {
 					return done(null, false);

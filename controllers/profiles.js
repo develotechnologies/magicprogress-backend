@@ -32,15 +32,14 @@ exports.updateProfile = async (req, res, next) => {
 				coordinates: [Number(longitude), Number(latitude)],
 			};
 		if (picture && picture[0].path) {
-			if (req.user.profile.picture) {
-				deleteProfilePicture(req.user.profile.picture);
-
+			if (req.user.profile.picture)
+				// deleteProfilePicture(req.user.profile.picture);
 				s3BucketManager.deleteAwsObject(req.user.profile.picture);
-			}
+
 			profileObj.picture = picture[0].path;
 		}
 		if (removePicture === "true") {
-			deleteProfilePicture(req.user.profile.picture);
+			// deleteProfilePicture(req.user.profile.picture);
 			s3BucketManager.deleteAwsObject(req.user.profile.picture);
 			profileObj.picture = "";
 		}
@@ -58,7 +57,6 @@ exports.updateProfile = async (req, res, next) => {
 		throw error;
 	}
 };
-
 exports.updateUser = async (req, res, next) => {
 	try {
 		const { user, phone, status, fcm, device, email, newPassword } = req.body;
