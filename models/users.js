@@ -28,6 +28,7 @@ const users = new Schema(
 			trim: true,
 			required: true,
 			index: true,
+			unique: true,
 		},
 		fcms: [fcm],
 		type: {
