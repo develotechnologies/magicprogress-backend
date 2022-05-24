@@ -108,8 +108,9 @@ exports.signup = async (req, res, next) => {
 
 exports.login = async (req, res, next) => {
 	try {
-		const { _id, phone } = req.user;
+		const { _id, email, phone } = req.user;
 		const query = { status: "active" };
+		if (email) query.email = email;
 		if (phone) query.phone = phone;
 		else if (_id) query._id = _id;
 		const userExists = await usersModel.findOne(query).populate([

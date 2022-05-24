@@ -1,0 +1,17 @@
+// @import "../../theme/colorsConfig.scss";
+
+.authPage {
+  background-image: linear-gradient(to bottom right, #2aba93 30%, #2f4983 70%);
+
+  .authHeading {
+    font-size: 35px;
+    letter-spacing: 6px;
+    color: #2f4983;
+    text-shadow: 5px 5px 5px rgb(202, 202, 202);
+    margin-bottom: 2rem;
+  }
+
+  .logoTitle:hover {
+    color: black;
+  }
+}
