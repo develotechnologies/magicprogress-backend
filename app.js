@@ -94,6 +94,7 @@ app.use(cookieParser());
 app.use("/public/", express.static(path.join("public/")));
 
 app.use("/api/v1", indexRouter);
+app.use(express.static(path.join("client/build")));
 
 app.get("/public/images/*", (req, res, next) => {
 	var url = req.originalUrl.split("url=")[1];
@@ -103,6 +104,9 @@ app.get("/public/images/*", (req, res, next) => {
 			url ? "/public/images/" + url : "/public/images/unnamed.webp"
 		)
 	);
+});
+app.get("/forgot-password", (req, res, next) => {
+	res.sendFile(path.resolve("client/build/index.html"));
 });
 
 app.get("/*", (req, res, next) => {
